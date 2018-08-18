@@ -1,0 +1,125 @@
+.App {
+  text-align: center;
+  margin: 0 auto;
+  font-family: 'Acme', sans-serif;
+}
+
+.title {
+  text-align: center;
+  font-size: 105px;
+  letter-spacing: 1px;
+  font-family: 'Acme', sans-serif;
+}
+
+.min-title {
+  text-align: center;
+  font-size: 45px;
+  letter-spacing: 1px;
+  font-family: 'Acme', sans-serif;
+
+}
+
+.new_game {
+  width: 160px;
+  height: 40px;
+  border-radius: 20px;
+  font-size: 15px;
+  margin-left: -3%;
+  margin-top: 5%;
+}
+
+.box {
+  margin: 0 auto;
+  padding-top: 20%;
+  text-align: center;
+}
+
+.arena {
+  display: none;
+}
+
+.player {
+  border: 1px solid black;
+  height: 660px;
+  border-right: 0;
+}
+
+.dealer {
+  border:  1px solid black;
+  height: 660px;
+  border-left: 0;
+}
+
+.player-tag {
+  padding: 0;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Acme', sans-serif;
+  text-align: left;
+  text-decoration: underline;
+}
+
+.dealer-tag {
+  padding: 0;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Acme', sans-serif;
+  text-align: right;
+  text-decoration: underline;
+}
+
+.begin_game {
+  width: 160px;
+  height: 40px;
+  border-radius: 20px;
+  font-size: 15px;
+  margin-top: 1%;
+  background-color: black;
+  color: white;
+  letter-spacing: 1px;
+}
+
+.player_list, .dealer_list {
+  list-style: none;
+}
+
+.card_B {
+  display: inline-block;
+  width: 120px;
+  height: 180px;
+  text-align: center;
+  font-size: 40px;
+  padding-top: 10%;
+  border: 1px solid black;
+  margin-left: 4px;
+  color: #000;
+}
+
+.card_R {
+  display: inline-block;
+  width: 120px;
+  height: 180px;
+  text-align: center;
+  font-size: 40px;
+  padding-top: 10%;
+  border: 1px solid black;
+  margin-left: 4px;
+  color: #ff0000;
+}
+
+.butts {
+  display: none;
+  position: absolute;
+  margin-top: 60%;
+  margin-left: 10%;
+}
+
+.butt_list {
+  list-style: none;
+}
+
+.each_butt {
+  display: inline-block;
+}
