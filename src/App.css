@@ -143,3 +143,11 @@
   font-size: 75px;
   margin-top: 25%;
 }
+
+.scoreBoard {
+  float: right;
+  font-size: 45px;
+  text-align: right;
+  position: absolute;
+  margin-top: -4%;
+}

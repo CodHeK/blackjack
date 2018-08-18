@@ -11,6 +11,8 @@ class App extends Component {
       dealer: [],
       playerFinalScore: 0,
       dealerFinalScore: 0,
+      pScore: 0,
+      dScore: 0,
     };
   }
 
@@ -79,9 +81,14 @@ class App extends Component {
       playerFinalScore: pfs,
       dealerFinalScore: dfs,
     }, () => {
-      const { playerFinalScore } = this.state;
+      const { playerFinalScore, pScore, dScore } = this.state;
       let pfs = playerFinalScore;
       if(pfs === 21) {
+        let ps = pScore;
+        ps = ps + 2;
+        this.setState({
+          pScore: ps,
+        });
         setTimeout(function() {
           $(".damp").hide();
           $(".title1").html("Player Wins !! \<br/> Blackjack !");
@@ -162,31 +169,52 @@ class App extends Component {
       player: player_copy,
       playerFinalScore: pfs,
     }, () => {
-      const { playerFinalScore, dealerFinalScore } = this.state;
-      setTimeout(function() {
+      const { playerFinalScore, dealerFinalScore, pScore, dScore } = this.state;
         if(playerFinalScore > 21) {
-          $(".damp").hide();
-          $(".title1").html("Player Busted \<br /> Dealer Wins !!");
-          $(".pwins, .news").fadeIn();
+          let ds = dScore;
+          ds++;
+          this.setState({
+            dScore: ds,
+          });
+          setTimeout(function() {
+            $(".damp").hide();
+            $(".title1").html("Player Busted \<br /> Dealer Wins !!");
+            $(".pwins, .news").fadeIn();
+          }, 1000);
         }
         else if(playerFinalScore === 21 && dealerFinalScore !== 21) {
-          $(".damp").hide();
-          $(".title1").html("Player Wins !! \<br/> Blackjack !");
-          $(".pwins, .news").fadeIn();
+          let ps = pScore;
+          ps = ps + 2;
+          this.setState({
+            pScore: ps,
+          });
+          setTimeout(function() {
+            $(".damp").hide();
+            $(".title1").html("Player Wins !! \<br/> Blackjack !");
+            $(".pwins, .news").fadeIn();
+          }, 1000);
         }
         else if(playerFinalScore === 21 && dealerFinalScore === 21) {
-          $(".damp").hide();
-          $(".title1").html("DRAW !!");
-          $(".pwins, .news").fadeIn();
+          let ps = pScore, ds = dScore;
+          ps++; ds++;
+          this.setState({
+            pScore: ps,
+            dScore: ds,
+          });
+          setTimeout(function() {
+            $(".damp").hide();
+            $(".title1").html("DRAW !!");
+            $(".pwins, .news").fadeIn();
+          }, 1000);
         }
-      }, 1000);
     });
   }
 
   dealerChance() {
-      const { player, dealer, playerFinalScore, dealerFinalScore } = this.state;
+      const { player, dealer, playerFinalScore, dealerFinalScore, pScore, dScore } = this.state;
       var dfs = dealerFinalScore, pfs = playerFinalScore;
       var dealer_copy = dealer, flag = 0;
+      let ps = pScore, ds = dScore;
       console.log("Score : " + dfs);
       if(dfs < 17) {
         let card = this.getCard();
@@ -215,6 +243,10 @@ class App extends Component {
         flag = 2;
       }
       else {
+        ps++;
+        this.setState({
+          pScore: ps,
+        });
         setTimeout(function() {
           $(".damp").hide();
           $(".title1").html("Player Wins !!");
@@ -225,6 +257,10 @@ class App extends Component {
 
       if(flag === 1) {
         if(Math.abs(21 - pfs) < Math.abs(21 - dfs)) {
+          ps++;
+          this.setState({
+            pScore: ps,
+          });
           setTimeout(function() {
             $(".damp").hide();
             $(".title1").html("Player Wins !!");
@@ -232,6 +268,10 @@ class App extends Component {
           }, 1000)
         }
         else if(Math.abs(21 - pfs) > Math.abs(21 - dfs)) {
+          ds++;
+          this.setState({
+            dScore: ds,
+          });
           setTimeout(function() {
             $(".damp").hide();
             $(".title1").html("Dealer Wins !!");
@@ -239,6 +279,11 @@ class App extends Component {
           }, 1000)
         }
         else {
+          ps++; ds++;
+          this.setState({
+            pScore: ps,
+            dScore: ds,
+          });
           setTimeout(function() {
             $(".damp").hide();
             $(".title1").html("DRAW !!");
@@ -247,6 +292,10 @@ class App extends Component {
         }
       }
       else if(flag === 2) {
+        ds = ds + 2;
+        this.setState({
+          dScore: ds,
+        });
         setTimeout(function() {
           $(".damp").hide();
           $(".title1").html("Dealer Wins !! \<br/> Blackjack !");
@@ -275,7 +324,7 @@ class App extends Component {
   }
 
   render() {
-    let { player, dealer, playerFinalScore, dealerFinalScore } = this.state;
+    let { player, dealer, playerFinalScore, dealerFinalScore, pScore, dScore } = this.state;
     let dfs = dealerFinalScore;
     let player_cards = player.map((card) => {
     if(card.type === "B") {
@@ -286,7 +335,7 @@ class App extends Component {
     });
     let dealer_cards;
     if(dealer.length === 2) {
-       dfs = "XX"; 
+       dfs = "XX";
        dealer_cards = dealer.map((card, index) => {
         if(index === 0) {
           return <li className="card_B">X</li>
@@ -318,6 +367,7 @@ class App extends Component {
         </div>
         <div className="arena">
           <h1 className="min-title">Blackjack</h1>
+          <h1 className="scoreBoard">Score&nbsp;:&nbsp;&nbsp;{pScore}&nbsp;-&nbsp;{dScore}</h1>
           <div className="pwins"><h1 className="title1"></h1></div>
           <button className="btn btn-default begin_game news" onClick={this.refresh.bind(this)}>NEW GAME</button>
           <div className="row damp">
