@@ -151,7 +151,7 @@ class App extends Component {
     if(pfs === 21) {
       setTimeout(function() {
         $(".damp").hide();
-        $(".title1").html("Player Wins !!");
+        $(".title1").html("Player Wins !! \<br/> Blackjack !");
         $(".pwins, .news").fadeIn();
       }, 1000)
       return;
@@ -169,7 +169,7 @@ class App extends Component {
         }
         else if(playerFinalScore === 21 && dealerFinalScore !== 21) {
           $(".damp").hide();
-          $(".title1").html("Player Wins !!");
+          $(".title1").html("Player Wins !! \<br/> Blackjack !");
           $(".pwins, .news").fadeIn();
         }
         else if(playerFinalScore === 21 && dealerFinalScore === 21) {
@@ -184,9 +184,9 @@ class App extends Component {
   dealerChance() {
       const { player, dealer, playerFinalScore, dealerFinalScore } = this.state;
       var dfs = dealerFinalScore, pfs = playerFinalScore;
-      var dealer_copy = dealer, flag;
+      var dealer_copy = dealer, flag = 0;
       console.log("Score : " + dfs);
-      if(dfs <= 17) {
+      if(dfs < 17) {
         let card = this.getCard();
         dealer_copy.push(card);
         dfs = this.getScore(dealer_copy);
@@ -194,24 +194,18 @@ class App extends Component {
           dealer: dealer_copy,
           dealerFinalScore: dfs,
         }, () => {
-          $(".dealer_moves").fadeIn();
-          setTimeout(function() {
-            $(".dealer_moves").html("HIT !");
-          }, 1000);
+          $(".dealer_moves").fadeIn().html("HIT !");
           setTimeout(function() {
             $(".dealer_moves").fadeOut();
-          }, 800);
+          }, 1000);
           this.dealerChance();
         });
       }
-      else if(dfs > 17 && dfs < 21) {
-        $(".dealer_moves").fadeIn();
-        setTimeout(function() {
-          $(".dealer_moves").html("STAND !");
-        }, 1000);
+      else if(dfs >= 17 && dfs < 21) {
+        $(".dealer_moves").fadeIn().html("STAND !");
         setTimeout(function() {
           $(".dealer_moves").fadeOut();
-        }, 800);
+        }, 1000);
 
         flag = 1;
       }
@@ -253,7 +247,7 @@ class App extends Component {
       else if(flag === 2) {
         setTimeout(function() {
           $(".damp").hide();
-          $(".title1").html("Dealer Wins !!");
+          $(".title1").html("Dealer Wins !! \<br/> Blackjack !");
           $(".pwins, .news").fadeIn();
         }, 1000)
       }
