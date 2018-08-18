@@ -78,6 +78,16 @@ class App extends Component {
       dealer: dealer_copy,
       playerFinalScore: pfs,
       dealerFinalScore: dfs,
+    }, () => {
+      const { playerFinalScore } = this.state;
+      let pfs = playerFinalScore;
+      if(pfs === 21) {
+        setTimeout(function() {
+          $(".damp").hide();
+          $(".title1").html("Player Wins !! \<br/> Blackjack !");
+          $(".pwins, .news").fadeIn();
+        }, 1000);
+      }
     });
   }
 
@@ -148,14 +158,6 @@ class App extends Component {
     let card = this.getCard();
     player_copy.push(card);
     let pfs = this.getScore(player_copy);
-    if(pfs === 21) {
-      setTimeout(function() {
-        $(".damp").hide();
-        $(".title1").html("Player Wins !! \<br/> Blackjack !");
-        $(".pwins, .news").fadeIn();
-      }, 1000)
-      return;
-    }
     this.setState({
       player: player_copy,
       playerFinalScore: pfs,
@@ -177,7 +179,7 @@ class App extends Component {
           $(".title1").html("DRAW !!");
           $(".pwins, .news").fadeIn();
         }
-      }, 1000)
+      }, 1000);
     });
   }
 
@@ -273,21 +275,40 @@ class App extends Component {
   }
 
   render() {
-    const { player, dealer, playerFinalScore, dealerFinalScore } = this.state;
-    const player_cards = player.map((card) => {
+    let { player, dealer, playerFinalScore, dealerFinalScore } = this.state;
+    let dfs = dealerFinalScore;
+    let player_cards = player.map((card) => {
     if(card.type === "B") {
       return <li className="card_B">{card.name}</li>
     } else {
       return <li className="card_R">{card.name}</li>
     }
     });
-    const dealer_cards = dealer.map((card) => {
-    if(card.type === "B") {
-      return <li className="card_B">{card.name}</li>
-    } else {
-      return <li className="card_R">{card.name}</li>
+    let dealer_cards;
+    if(dealer.length === 2) {
+       dfs = "XX"; 
+       dealer_cards = dealer.map((card, index) => {
+        if(index === 0) {
+          return <li className="card_B">X</li>
+        } else {
+          if(card.type === "B") {
+            return <li className="card_B">{card.name}</li>
+          } else {
+            return <li className="card_R">{card.name}</li>
+          }
+        }
+      }
+      );
     }
-    });
+    else {
+       dealer_cards = dealer.map((card) => {
+      if(card.type === "B") {
+        return <li className="card_B">{card.name}</li>
+      } else {
+        return <li className="card_R">{card.name}</li>
+      }
+      });
+    }
     return (
       <div className="App container">
         <div className="box">
@@ -312,7 +333,7 @@ class App extends Component {
               </div>
             </div>
             <div className="col-md-6 dealer">
-              <h4 className="dealer-tag">DEALER&nbsp;:&nbsp;{dealerFinalScore}</h4>
+              <h4 className="dealer-tag">DEALER&nbsp;:&nbsp;{dfs}</h4>
               <ul className="dealer_list">{dealer_cards}</ul>
               <h1 className="dealer_moves"></h1>
             </div>
