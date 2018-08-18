@@ -15,7 +15,7 @@ class App extends Component {
   }
 
   startGame() {
-    $(".box, .pwins, .news").fadeOut();
+    $(".box, .pwins, .news, .fscore, .dealer_moves").fadeOut();
     $(".arena").fadeIn(1000);
   }
 
@@ -138,7 +138,7 @@ class App extends Component {
     this.setState({ deck: deck }, () => {  //as this.setState() is asynch
       this.distribute();
     });
-    $(".butts").fadeIn();
+    $(".butts, .butt_list").show();
     $(".begins").fadeOut();
   }
 
@@ -148,28 +148,121 @@ class App extends Component {
     let card = this.getCard();
     player_copy.push(card);
     let pfs = this.getScore(player_copy);
+    if(pfs === 21) {
+      setTimeout(function() {
+        $(".damp").hide();
+        $(".title1").html("Player Wins !!");
+        $(".pwins, .news").fadeIn();
+      }, 1000)
+      return;
+    }
     this.setState({
       player: player_copy,
       playerFinalScore: pfs,
     }, () => {
-      const { playerFinalScore } = this.state;
+      const { playerFinalScore, dealerFinalScore } = this.state;
       setTimeout(function() {
         if(playerFinalScore > 21) {
           $(".damp").hide();
-          $(".title1").html("PLAYER BUSTED \<br /> DEALER WINS !!");
+          $(".title1").html("Player Busted \<br /> Dealer Wins !!");
           $(".pwins, .news").fadeIn();
         }
-        else if(playerFinalScore === 21) {
+        else if(playerFinalScore === 21 && dealerFinalScore !== 21) {
           $(".damp").hide();
-          $(".title1").html("PLAYER WINS !!");
+          $(".title1").html("Player Wins !!");
+          $(".pwins, .news").fadeIn();
+        }
+        else if(playerFinalScore === 21 && dealerFinalScore === 21) {
+          $(".damp").hide();
+          $(".title1").html("DRAW !!");
           $(".pwins, .news").fadeIn();
         }
       }, 1000)
     });
   }
 
-  playerStand() {
+  dealerChance() {
+      const { player, dealer, playerFinalScore, dealerFinalScore } = this.state;
+      var dfs = dealerFinalScore, pfs = playerFinalScore;
+      var dealer_copy = dealer, flag;
+      console.log("Score : " + dfs);
+      if(dfs <= 17) {
+        let card = this.getCard();
+        dealer_copy.push(card);
+        dfs = this.getScore(dealer_copy);
+        this.setState({
+          dealer: dealer_copy,
+          dealerFinalScore: dfs,
+        }, () => {
+          $(".dealer_moves").fadeIn();
+          setTimeout(function() {
+            $(".dealer_moves").html("HIT !");
+          }, 1000);
+          setTimeout(function() {
+            $(".dealer_moves").fadeOut();
+          }, 800);
+          this.dealerChance();
+        });
+      }
+      else if(dfs > 17 && dfs < 21) {
+        $(".dealer_moves").fadeIn();
+        setTimeout(function() {
+          $(".dealer_moves").html("STAND !");
+        }, 1000);
+        setTimeout(function() {
+          $(".dealer_moves").fadeOut();
+        }, 800);
 
+        flag = 1;
+      }
+      else if(dfs === 21) {
+        flag = 2;
+      }
+      else {
+        setTimeout(function() {
+          $(".damp").hide();
+          $(".title1").html("Player Wins !!");
+          $(".pwins, .news").fadeIn();
+        }, 1000)
+      }
+
+
+      if(flag === 1) {
+        if(Math.abs(21 - pfs) < Math.abs(21 - dfs)) {
+          setTimeout(function() {
+            $(".damp").hide();
+            $(".title1").html("Player Wins !!");
+            $(".pwins, .news").fadeIn();
+          }, 1000)
+        }
+        else if(Math.abs(21 - pfs) > Math.abs(21 - dfs)) {
+          setTimeout(function() {
+            $(".damp").hide();
+            $(".title1").html("Dealer Wins !!");
+            $(".pwins, .news").fadeIn();
+          }, 1000)
+        }
+        else {
+          setTimeout(function() {
+            $(".damp").hide();
+            $(".title1").html("DRAW !!");
+            $(".pwins, .news").fadeIn();
+          }, 1000)
+        }
+      }
+      else if(flag === 2) {
+        setTimeout(function() {
+          $(".damp").hide();
+          $(".title1").html("Dealer Wins !!");
+          $(".pwins, .news").fadeIn();
+        }, 1000)
+      }
+  }
+
+  playerStand() {
+    $(".butt_list").fadeOut();
+    $(".fscore").fadeIn(500);
+    setTimeout(this.dealerChance(), 1200);
   }
 
   refresh() {
@@ -180,7 +273,7 @@ class App extends Component {
       playerFinalScore: 0,
       dealerFinalScore: 0,
     }, () => {
-      $(".pwins, .news").fadeOut();
+      $(".pwins, .news, .fscore, .butts").fadeOut();
       $(".damp, .begins").fadeIn();
     });
   }
@@ -218,14 +311,16 @@ class App extends Component {
               <ul className="player_list">{player_cards}</ul>
               <div className="butts">
                 <ul className="butt_list">
-                  <li className="each_butt"><button class="btn btn-default begin_game" onClick={this.playerHit.bind(this)}>HIT</button></li>&nbsp;&nbsp;
-                  <li className="each_butt"><button class="btn btn-default begin_game" onClick={this.playerStand.bind(this)}>STAND</button></li>
+                  <li className="each_butt"><button className="btn btn-default begin_game" onClick={this.playerHit.bind(this)}>HIT</button></li>&nbsp;&nbsp;
+                  <li className="each_butt"><button className="btn btn-default begin_game" onClick={this.playerStand.bind(this)}>STAND</button></li>
                 </ul>
+                <h1 className="fscore">Your final Score&nbsp;:&nbsp;&nbsp;&nbsp;<span style={{ fontSize: '55px' }}>{playerFinalScore}</span></h1>
               </div>
             </div>
             <div className="col-md-6 dealer">
               <h4 className="dealer-tag">DEALER&nbsp;:&nbsp;{dealerFinalScore}</h4>
               <ul className="dealer_list">{dealer_cards}</ul>
+              <h1 className="dealer_moves"></h1>
             </div>
           </div>
           <button className="btn btn-default begin_game begins" onClick={this.deal.bind(this)}>BEGIN</button>
